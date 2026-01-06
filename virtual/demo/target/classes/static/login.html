@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Banking System - Login</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        position: relative;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    body::before {
+        content: '';
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(139, 21, 56, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        top: -250px;
+        right: -250px;
+        animation: float 20s ease-in-out infinite;
+    }
+
+    body::after {
+        content: '';
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(44, 90, 160, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        bottom: -200px;
+        left: -200px;
+        animation: float 15s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(30px, 30px) scale(1.1); }
+    }
+
+    .container {
+        width: 100%;
+        max-width: 480px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(139, 21, 56, 0.1);
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+    }
+
+    .container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #8B1538 0%, #2c5aa0 50%, #c0392b 100%);
+        z-index: 2;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #8B1538 0%, #2c5aa0 100%);
+        padding: 40px 30px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        animation: pulse 8s ease-in-out infinite;
+    }
+
+    .header::after {
+        content: '🏦';
+        position: absolute;
+        font-size: 120px;
+        opacity: 0.08;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.05; }
+        50% { transform: scale(1.2); opacity: 0.08; }
+    }
+
+    .header h1 {
+        font-size: 32px;
+        margin-bottom: 8px;
+        font-weight: 300;
+        letter-spacing: 4px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .header h1::before {
+        content: '💳';
+        margin-right: 12px;
+        font-size: 28px;
+    }
+
+    .header p {
+        font-size: 13px;
+        opacity: 0.95;
+        font-weight: 300;
+        letter-spacing: 1px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .content {
+        padding: 45px 40px;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-weight: 400;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid #dce1e8;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.2s ease;
+        background: #fafbfc;
+        color: #2c3e50;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #2c5aa0;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.05);
+    }
+
+    .form-group input::placeholder {
+        color: #95a5a6;
+    }
+
+    .form-group select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%232c3e50' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 40px;
+    }
+
+    .form-group select option {
+        background: white;
+        color: #2c3e50;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        background: linear-gradient(135deg, #8B1538 0%, #2c5aa0 100%);
+        color: white;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-top: 8px;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(139, 21, 56, 0.3);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .link {
+        text-align: center;
+        margin-top: 24px;
+        color: #7f8c8d;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .link a {
+        color: #2c5aa0;
+        text-decoration: none;
+        font-weight: 500;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    .link a:hover {
+        color: #8B1538;
+        text-decoration: underline;
+    }
+
+    .message {
+        padding: 14px 16px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        font-size: 13px;
+        display: none;
+        border-left: 3px solid;
+    }
+
+    .message.success {
+        background: #f0f9f4;
+        color: #27ae60;
+        border-color: #27ae60;
+    }
+
+    .message.error {
+        background: #fef5f5;
+        color: #c0392b;
+        border-color: #c0392b;
+    }
+
+    .message.show {
+        display: block;
+        animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    h2 {
+        color: #2c3e50;
+        margin-bottom: 32px;
+        text-align: center;
+        font-weight: 300;
+        font-size: 24px;
+        letter-spacing: 1px;
+    }
+
+    .divider {
+        height: 1px;
+        background: linear-gradient(to right, transparent, #dce1e8, transparent);
+        margin: 28px 0;
+    }
+
+    .floating-icon {
+        position: absolute;
+        font-size: 30px;
+        opacity: 0.1;
+        pointer-events: none;
+        z-index: 0;
+        animation: floatAround 15s infinite ease-in-out;
+    }
+
+    @keyframes floatAround {
+        0%, 100% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 0.1;
+        }
+        25% {
+            transform: translate(50px, -50px) rotate(90deg);
+            opacity: 0.2;
+        }
+        50% {
+            transform: translate(100px, 0) rotate(180deg);
+            opacity: 0.15;
+        }
+        75% {
+            transform: translate(50px, 50px) rotate(270deg);
+            opacity: 0.2;
+        }
+    }
+
+    .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: linear-gradient(135deg, #8B1538, #2c5aa0);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0;
+    }
+
+    @keyframes particleFloat {
+        0% {
+            transform: translateY(0) translateX(0);
+            opacity: 0;
+        }
+        10% {
+            opacity: 0.8;
+        }
+        90% {
+            opacity: 0.3;
+        }
+        100% {
+            transform: translateY(-100vh) translateX(var(--drift));
+            opacity: 0;
+        }
+    }
+  </style>
+</head>
+<body>
+<div id="floatingIcons"></div>
+<div id="particles"></div>
+
+<div class="container">
+  <div class="header">
+    <h1>VBS</h1>
+    <p>Virtual Banking System</p>
+  </div>
+
+  <div class="content">
+    <h2>Login</h2>
+
+    <div id="loginMessage" class="message"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="loginUsername" required>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" required>
+      </div>
+
+      <div class="form-group">
+        <label>Role</label>
+        <select id="loginRole" required>
+          <option value="">Select Role</option>
+          <option value="customer">Customer</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn">Login</button>
+    </form>
+
+    <div class="divider"></div>
+
+    <div class="link">
+      Don't have an account? <a onclick="window.location.href='signup.html'">Sign Up</a>
+    </div>
+    <div class="link">
+      <a onclick="window.location.href='home.html'">← Back to Home</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Create floating banking icons
+  const createFloatingIcons = () => {
+      const icons = ['💰', '💳', '💵', '🏦', '💎', '📊', '💼', '🔒'];
+      const container = document.getElementById('floatingIcons');
+
+      icons.forEach((icon, index) => {
+          const iconEl = document.createElement('div');
+          iconEl.className = 'floating-icon';
+          iconEl.textContent = icon;
+          iconEl.style.left = Math.random() * 100 + '%';
+          iconEl.style.top = Math.random() * 100 + '%';
+          iconEl.style.animationDelay = (index * 2) + 's';
+          iconEl.style.animationDuration = (15 + Math.random() * 10) + 's';
+          container.appendChild(iconEl);
+      });
+  };
+
+  // Create floating particles
+  const createParticles = () => {
+      const container = document.getElementById('particles');
+
+      setInterval(() => {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.bottom = '-10px';
+          particle.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+          particle.style.animation = `particleFloat ${8 + Math.random() * 4}s linear`;
+
+          container.appendChild(particle);
+
+          setTimeout(() => {
+              particle.remove();
+          }, 12000);
+      }, 800);
+  };
+
+  // Mouse trail effect
+  let mouseTrail = [];
+  document.addEventListener('mousemove', (e) => {
+      if (mouseTrail.length > 20) {
+          const old = mouseTrail.shift();
+          if (old && old.parentNode) old.remove();
+      }
+
+      const trail = document.createElement('div');
+      trail.style.position = 'absolute';
+      trail.style.width = '8px';
+      trail.style.height = '8px';
+      trail.style.borderRadius = '50%';
+      trail.style.background = 'radial-gradient(circle, rgba(139, 21, 56, 0.4), rgba(44, 90, 160, 0.2))';
+      trail.style.left = e.pageX + 'px';
+      trail.style.top = e.pageY + 'px';
+      trail.style.pointerEvents = 'none';
+      trail.style.zIndex = '0';
+      trail.style.transform = 'translate(-50%, -50%)';
+      trail.style.transition = 'all 0.5s ease-out';
+
+      document.body.appendChild(trail);
+      mouseTrail.push(trail);
+
+      setTimeout(() => {
+          trail.style.opacity = '0';
+          trail.style.transform = 'translate(-50%, -50%) scale(0)';
+      }, 10);
+  });
+
+  // Initialize animations
+  createFloatingIcons();
+  createParticles();
+
+  const API_URL = 'http://localhost:8084';
+
+  function showMessage(elementId, message, type) {
+      const messageEl = document.getElementById(elementId);
+      messageEl.textContent = message;
+      messageEl.className = `message ${type} show`;
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const loginData = {
+          username: document.getElementById('loginUsername').value,
+          password: document.getElementById('loginPassword').value,
+          role: document.getElementById('loginRole').value
+      };
+
+      try {
+          const response = await fetch(`${API_URL}/login`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(loginData)
+          });
+
+          const result = (await response.text()).trim();
+
+          if (/^\d+$/.test(result)) {
+              showMessage('loginMessage', 'Login successful! Redirecting...', 'success');
+
+              localStorage.clear();
+              localStorage.setItem("userId", result);
+
+              const role = loginData.role.trim().toLowerCase();
+              localStorage.setItem("role", role);
+
+              setTimeout(() => {
+                  if (role === "admin") {
+                      window.location.href = `admin.html?id=${result}`;
+                  } else {
+                      window.location.href = `dashboard.html?id=${result}`;
+                  }
+              }, 800);
+
+          } else {
+              showMessage('loginMessage', result, 'error');
+          }
+      } catch (error) {
+          showMessage('loginMessage', 'Error connecting to server. Please try again.', 'error');
+          console.error('Login error:', error);
+      }
+  });
+</script>
+
+</body>
+</html>

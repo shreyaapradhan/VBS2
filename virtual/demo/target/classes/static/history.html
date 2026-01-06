@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - Virtual Banking System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139, 21, 56, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -250px;
+            right: -250px;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(44, 90, 160, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -200px;
+            left: -200px;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 30px) scale(1.1); }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(139, 21, 56, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #8B1538 0%, #2c5aa0 50%, #c0392b 100%);
+            z-index: 2;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B1538 0%, #2c5aa0 100%);
+            padding: 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.05; }
+            50% { transform: scale(1.2); opacity: 0.08; }
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1::before {
+            content: '📋';
+            margin-right: 12px;
+            font-size: 24px;
+        }
+
+        .btn-header {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 13px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-header:hover {
+            background: white;
+            color: #8B1538;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            background: #fafbfc;
+            padding: 20px;
+            border: 1px solid #dce1e8;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .history-table thead {
+            background: linear-gradient(135deg, #8B1538 0%, #2c5aa0 100%);
+            color: white;
+        }
+
+        .history-table th {
+            padding: 16px 15px;
+            text-align: left;
+            font-weight: 400;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .history-table tbody tr {
+            border-bottom: 1px solid #dce1e8;
+            transition: all 0.2s ease;
+        }
+
+        .history-table tbody tr:hover {
+            background-color: rgba(139, 21, 56, 0.03);
+            box-shadow: inset 0 0 10px rgba(139, 21, 56, 0.05);
+        }
+
+        .history-table td {
+            padding: 14px 15px;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+
+        .history-table td:first-child {
+            font-weight: 600;
+            color: #8B1538;
+            width: 60px;
+        }
+
+        .history-table td:nth-child(2) {
+            color: #555;
+            word-break: break-word;
+        }
+
+        .date {
+            color: #7f8c8d;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+            font-size: 16px;
+            font-weight: 300;
+        }
+
+        .history-empty::before {
+            content: '📋';
+            display: block;
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatAround 15s infinite ease-in-out;
+        }
+
+        @keyframes floatAround {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0.1;
+            }
+            25% {
+                transform: translate(50px, -50px) rotate(90deg);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translate(100px, 0) rotate(180deg);
+                opacity: 0.15;
+            }
+            75% {
+                transform: translate(50px, 50px) rotate(270deg);
+                opacity: 0.2;
+            }
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(135deg, #8B1538, #2c5aa0);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(var(--drift));
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .history-table th,
+            .history-table td {
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .table-wrapper {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="floatingIcons"></div>
+<div id="particles"></div>
+<div class="container">
+    <div class="header">
+        <h1>History</h1>
+        <div>
+            <button class="btn-header" onclick="goBackToAdmin()">← Back</button>
+        </div>
+    </div>
+    <div class="content">
+        <div id="historyMessage" class="history-empty" style="display:none"></div>
+        <div class="table-wrapper">
+            <table class="history-table" id="historyTable">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody id="historyBody">
+                <tr>
+                    <td colspan="3" class="history-empty">Loading history...</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Create floating banking icons
+    const createFloatingIcons = () => {
+        const icons = ['💰', '💳', '💵', '🏦', '💎', '📊', '💼', '🔒'];
+        const container = document.getElementById('floatingIcons');
+
+        icons.forEach((icon, index) => {
+            const iconEl = document.createElement('div');
+            iconEl.className = 'floating-icon';
+            iconEl.textContent = icon;
+            iconEl.style.left = Math.random() * 100 + '%';
+            iconEl.style.top = Math.random() * 100 + '%';
+            iconEl.style.animationDelay = (index * 2) + 's';
+            iconEl.style.animationDuration = (15 + Math.random() * 10) + 's';
+            container.appendChild(iconEl);
+        });
+    };
+
+    // Create floating particles
+    const createParticles = () => {
+        const container = document.getElementById('particles');
+
+        setInterval(() => {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.bottom = '-10px';
+            particle.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+            particle.style.animation = `particleFloat ${8 + Math.random() * 4}s linear`;
+
+            container.appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, 12000);
+        }, 800);
+    };
+
+    // Mouse trail effect
+    let mouseTrail = [];
+    document.addEventListener('mousemove', (e) => {
+        if (mouseTrail.length > 20) {
+            const old = mouseTrail.shift();
+            if (old && old.parentNode) old.remove();
+        }
+
+        const trail = document.createElement('div');
+        trail.style.position = 'absolute';
+        trail.style.width = '8px';
+        trail.style.height = '8px';
+        trail.style.borderRadius = '50%';
+        trail.style.background = 'radial-gradient(circle, rgba(139, 21, 56, 0.4), rgba(44, 90, 160, 0.2))';
+        trail.style.left = e.pageX + 'px';
+        trail.style.top = e.pageY + 'px';
+        trail.style.pointerEvents = 'none';
+        trail.style.zIndex = '0';
+        trail.style.transform = 'translate(-50%, -50%)';
+        trail.style.transition = 'all 0.5s ease-out';
+
+        document.body.appendChild(trail);
+        mouseTrail.push(trail);
+
+        setTimeout(() => {
+            trail.style.opacity = '0';
+            trail.style.transform = 'translate(-50%, -50%) scale(0)';
+        }, 10);
+    });
+
+    // Initialize animations
+    createFloatingIcons();
+    createParticles();
+
+    const API_URL = 'http://localhost:8084';
+    let userId = null;
+
+    function getUserIdFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const urlUserId = params.get('id');
+        const storedUserId = localStorage.getItem('userId');
+        userId = storedUserId || urlUserId;
+    }
+
+    function goBackToAdmin() {
+        const params = new URLSearchParams();
+        if (userId) params.set('id', userId);
+        params.set('role', 'admin');
+        window.location.href = `admin.html?${params.toString()}`;
+    }
+
+    async function loadHistories() {
+        try {
+            const res = await fetch(`${API_URL}/histories`);
+            if (!res.ok) throw new Error('Failed to load histories');
+            const histories = await res.json();
+            renderHistories(histories);
+        } catch (err) {
+            console.error(err);
+            const body = document.getElementById('historyBody');
+            body.innerHTML = `<tr><td colspan="3" class="history-empty">Unable to load history. Ensure backend is running.</td></tr>`;
+        }
+    }
+
+    function renderHistories(list) {
+        const body = document.getElementById('historyBody');
+        if (!list || list.length === 0) {
+            body.innerHTML = `<tr><td colspan="3" class="history-empty">No history records found.</td></tr>`;
+            return;
+        }
+
+        body.innerHTML = list.map(h => `
+            <tr>
+                <td>#${h.id}</td>
+                <td>${escapeHtml(h.description)}</td>
+                <td class="date">${formatDate(h.date)}</td>
+            </tr>
+        `).join('');
+    }
+
+    function formatDate(d) {
+        if (!d) return '';
+        const dt = new Date(d);
+        if (isNaN(dt)) return d;
+        return dt.toLocaleString();
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>"']/g, function(c) {
+            return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c];
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        getUserIdFromURL();
+        loadHistories();
+    });
+</script>
+</body>
+</html>

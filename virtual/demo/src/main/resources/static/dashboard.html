@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Banking System - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139, 21, 56, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -250px;
+            right: -250px;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(44, 90, 160, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -200px;
+            left: -200px;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 30px) scale(1.1); }
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatAround 15s infinite ease-in-out;
+        }
+
+        @keyframes floatAround {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0.1;
+            }
+            25% {
+                transform: translate(50px, -50px) rotate(90deg);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translate(100px, 0) rotate(180deg);
+                opacity: 0.15;
+            }
+            75% {
+                transform: translate(50px, 50px) rotate(270deg);
+                opacity: 0.2;
+            }
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(135deg, #8B1538, #2c5aa0);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(139, 21, 56, 0.1);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #8B1538 0%, #2c5aa0 50%, #c0392b 100%);
+            z-index: 2;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B1538 0%, #2c5aa0 100%);
+            padding: 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .header::after {
+            content: '🏦';
+            position: absolute;
+            font-size: 120px;
+            opacity: 0.08;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.05; }
+            50% { transform: scale(1.2); opacity: 0.08; }
+        }
+
+        .header-left {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-weight: 300;
+            letter-spacing: 4px;
+        }
+
+        .header-left h1::before {
+            content: '💳';
+            margin-right: 12px;
+            font-size: 24px;
+        }
+
+        .header-left p {
+            font-size: 13px;
+            opacity: 0.95;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #8B1538;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-header h2 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .dashboard-header p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .dashboard-header strong {
+            color: #2c5aa0;
+        }
+
+        .account-balance {
+            background: linear-gradient(135deg, #8B1538 0%, #2c5aa0 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .account-balance::before {
+            content: '💰';
+            position: absolute;
+            font-size: 100px;
+            opacity: 0.1;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+        }
+
+        .account-balance p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-amount {
+            font-size: 36px;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+
+        .transaction-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn-withdraw {
+            background: linear-gradient(135deg, #c0392b 0%, #8B1538 100%);
+            color: white;
+        }
+
+        .btn-withdraw:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(192, 57, 43, 0.4);
+        }
+
+        .btn-deposit {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%);
+            color: white;
+        }
+
+        .btn-deposit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 90, 160, 0.4);
+        }
+
+        .btn-transfer {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+        }
+
+        .btn-transfer:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-passbook {
+            background: linear-gradient(135deg, #8B1538 0%, #2c5aa0 100%);
+            color: white;
+        }
+
+        .btn-passbook:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 21, 56, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-top: 4px solid;
+            border-image: linear-gradient(90deg, #8B1538 0%, #2c5aa0 100%) 1;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: 300;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 400;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dce1e8;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: #fafbfc;
+            color: #2c3e50;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2c5aa0;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.05);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-modal {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #8B1538 0%, #2c5aa0 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 21, 56, 0.3);
+        }
+
+        .btn-cancel {
+            background: #f0f0f0;
+            color: #2c3e50;
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .message {
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            display: none;
+            border-left: 3px solid;
+        }
+
+        .message.success {
+            background: #f0f9f4;
+            color: #27ae60;
+            border-color: #27ae60;
+        }
+
+        .message.error {
+            background: #fef5f5;
+            color: #c0392b;
+            border-color: #c0392b;
+        }
+
+        .message.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .transaction-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="floatingIcons"></div>
+<div id="particles"></div>
+
+<div class="container">
+    <div class="header">
+        <div class="header-left">
+            <h1>VBS</h1>
+            <p>Virtual Banking System</p>
+        </div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="content">
+
+        <div class="dashboard-header">
+            <h2 id="welcomeText">Welcome</h2>
+            <p>User ID: <strong><span id="userId">-</span></strong></p>
+        </div>
+
+        <div id="dashMessage" class="message"></div>
+
+        <div class="account-balance">
+            <p>Available Balance</p>
+            <div class="balance-amount">₹ <span id="balance">0.00</span></div>
+        </div>
+
+        <div class="transaction-buttons">
+            <button class="btn btn-withdraw" onclick="openWithdrawModal()">
+                💸 Withdraw
+            </button>
+
+            <button class="btn btn-deposit" onclick="openDepositModal()">
+                💵 Deposit
+            </button>
+
+            <button class="btn btn-transfer" onclick="openTransferModal()">
+                💸 Transfer
+            </button>
+
+            <button class="btn btn-passbook" onclick="goToPassbook()">
+                📒 Passbook
+            </button>
+
+            <button class="btn btn-passbook" onclick="openUpdateModal()">
+                ✏️ Update Profile
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Withdraw Modal -->
+<div id="withdrawModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">Withdraw Funds</div>
+        <form id="withdrawForm">
+            <div class="form-group">
+                <label>Amount</label>
+                <input type="number" id="withdrawAmount" step="0.01" min="0" required>
+            </div>
+
+            <div class="modal-buttons">
+                <button type="button" class="btn-modal btn-cancel" onclick="closeWithdrawModal()">Cancel</button>
+                <button type="submit" class="btn-modal btn-submit">Withdraw</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Deposit Modal -->
+<div id="depositModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">Deposit Funds</div>
+        <form id="depositForm">
+            <div class="form-group">
+                <label>Amount</label>
+                <input type="number" id="depositAmount" step="0.01" min="0" required>
+            </div>
+
+            <div class="modal-buttons">
+                <button type="button" class="btn-modal btn-cancel" onclick="closeDepositModal()">Cancel</button>
+                <button type="submit" class="btn-modal btn-submit">Deposit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Update Profile Modal -->
+<div id="updateModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">Update Profile</div>
+        <form id="updateForm">
+            <div class="form-group">
+                <label>Field</label>
+                <select id="updateKey" required>
+                    <option value="name">Name</option>
+                    <option value="password">Password</option>
+                    <option value="email">Email</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>New Value</label>
+                <input type="text" id="updateValue" required>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-modal btn-cancel" onclick="closeUpdateModal()">Cancel</button>
+                <button type="submit" class="btn-modal btn-submit">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Transfer Modal -->
+<div id="transferModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">Transfer Funds</div>
+        <form id="transferForm">
+            <div class="form-group">
+                <label>Recipient Username</label>
+                <input type="text" id="transferUsername" required>
+            </div>
+            <div class="form-group">
+                <label>Amount</label>
+                <input type="number" id="transferAmount" step="0.01" min="0" required>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-modal btn-cancel" onclick="closeTransferModal()">Cancel</button>
+                <button type="submit" class="btn-modal btn-submit">Send</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Create floating banking icons
+    const createFloatingIcons = () => {
+        const icons = ['💰', '💳', '💵', '🏦', '💎', '📊', '💼', '🔒'];
+        const container = document.getElementById('floatingIcons');
+
+        icons.forEach((icon, index) => {
+            const iconEl = document.createElement('div');
+            iconEl.className = 'floating-icon';
+            iconEl.textContent = icon;
+            iconEl.style.left = Math.random() * 100 + '%';
+            iconEl.style.top = Math.random() * 100 + '%';
+            iconEl.style.animationDelay = (index * 2) + 's';
+            iconEl.style.animationDuration = (15 + Math.random() * 10) + 's';
+            container.appendChild(iconEl);
+        });
+    };
+
+    // Create floating particles
+    const createParticles = () => {
+        const container = document.getElementById('particles');
+
+        setInterval(() => {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.bottom = '-10px';
+            particle.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+            particle.style.animation = `particleFloat ${8 + Math.random() * 4}s linear`;
+
+            container.appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, 12000);
+        }, 800);
+    };
+
+    // Mouse trail effect
+    let mouseTrail = [];
+    document.addEventListener('mousemove', (e) => {
+        if (mouseTrail.length > 20) {
+            const old = mouseTrail.shift();
+            if (old && old.parentNode) old.remove();
+        }
+
+        const trail = document.createElement('div');
+        trail.style.position = 'absolute';
+        trail.style.width = '8px';
+        trail.style.height = '8px';
+        trail.style.borderRadius = '50%';
+        trail.style.background = 'radial-gradient(circle, rgba(139, 21, 56, 0.4), rgba(44, 90, 160, 0.2))';
+        trail.style.left = e.pageX + 'px';
+        trail.style.top = e.pageY + 'px';
+        trail.style.pointerEvents = 'none';
+        trail.style.zIndex = '0';
+        trail.style.transform = 'translate(-50%, -50%)';
+        trail.style.transition = 'all 0.5s ease-out';
+
+        document.body.appendChild(trail);
+        mouseTrail.push(trail);
+
+        setTimeout(() => {
+            trail.style.opacity = '0';
+            trail.style.transform = 'translate(-50%, -50%) scale(0)';
+        }, 10);
+    });
+
+    // Initialize animations
+    createFloatingIcons();
+    createParticles();
+
+    const API_URL = 'http://localhost:8084';
+    let userId = null;
+    let role = 'customer';
+
+    function getUserIdFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        userId = params.get('id');
+        role = params.get('role') || 'customer';
+
+        if (!userId) {
+            window.location.href = 'login.html';
+        }
+    }
+
+    async function loadDashboard() {
+        document.getElementById('userId').textContent = userId;
+
+        try {
+            const res = await fetch(`${API_URL}/get-details/${userId}`);
+            const data = await res.json();
+
+            if (document.getElementById('welcomeText')) {
+                document.getElementById('welcomeText').textContent =
+                    `Welcome ${data.username}`;
+            }
+
+            if (document.getElementById('balance')) {
+                document.getElementById('balance').textContent =
+                    data.balance.toFixed(2);
+            }
+        } catch {
+            showMessage('dashMessage', 'Failed to load dashboard', 'error');
+        }
+    }
+
+    function openWithdrawModal() {
+        document.getElementById('withdrawModal').classList.add('show');
+    }
+
+    function closeWithdrawModal() {
+        document.getElementById('withdrawModal').classList.remove('show');
+        document.getElementById('withdrawForm').reset();
+    }
+
+    function openDepositModal() {
+        document.getElementById('depositModal').classList.add('show');
+    }
+
+    function closeDepositModal() {
+        document.getElementById('depositModal').classList.remove('show');
+        document.getElementById('depositForm').reset();
+    }
+
+    function openTransferModal() {
+        document.getElementById('transferModal').classList.add('show');
+    }
+
+    function closeTransferModal() {
+        document.getElementById('transferModal').classList.remove('show');
+        document.getElementById('transferForm').reset();
+    }
+
+    function openUpdateModal() {
+        document.getElementById('updateModal').classList.add('show');
+    }
+
+    function closeUpdateModal() {
+        document.getElementById('updateModal').classList.remove('show');
+        document.getElementById('updateForm').reset();
+    }
+
+    function showMessage(elementId, message, type) {
+        const messageEl = document.getElementById(elementId);
+        messageEl.textContent = message;
+        messageEl.className = `message ${type} show`;
+        setTimeout(() => {
+            messageEl.classList.remove('show');
+        }, 3000);
+    }
+
+    const withdrawForm = document.getElementById('withdrawForm');
+    if (withdrawForm) {
+        withdrawForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const withdrawData = {
+                id: parseInt(userId),
+                amount: parseFloat(document.getElementById('withdrawAmount').value)
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/withdraw`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(withdrawData)
+                });
+                const result = await response.text();
+
+                if (result && result.toLowerCase().includes('withdrawal')) {
+                    showMessage('dashMessage', 'Withdrawal successful!', 'success');
+                    closeWithdrawModal();
+                    loadDashboard();
+                } else {
+                    showMessage('dashMessage', result || 'Withdrawal failed', 'error');
+                }
+            } catch (error) {
+                showMessage('dashMessage', 'Error processing withdrawal', 'error');
+                console.error(error);
+            }
+        });
+    }
+
+    const depositForm = document.getElementById('depositForm');
+    if (depositForm) {
+        depositForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const depositData = {
+                id: parseInt(userId),
+                amount: parseFloat(document.getElementById('depositAmount').value)
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/deposit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(depositData)
+                });
+                const result = await response.text();
+
+                if (result && result.toLowerCase().includes('deposit')) {
+                    showMessage('dashMessage', 'Deposit successful!', 'success');
+                    closeDepositModal();
+                    loadDashboard();
+                } else {
+                    showMessage('dashMessage', result || 'Deposit failed', 'error');
+                }
+            } catch (error) {
+                showMessage('dashMessage', 'Error processing deposit', 'error');
+                console.error(error);
+            }
+        });
+    }
+
+    const transferForm = document.getElementById('transferForm');
+    if (transferForm) {
+        transferForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const transferData = {
+                id: parseInt(userId),
+                amount: parseFloat(document.getElementById('transferAmount').value),
+                username: document.getElementById('transferUsername').value
+            };
+
+            if (!transferData.username) {
+                showMessage('dashMessage', 'Enter recipient username.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/transfer`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(transferData)
+                });
+                const result = await response.text();
+
+                if (response.ok && result && result.toLowerCase().includes('successfully')) {
+                    showMessage('dashMessage', 'Transfer successful!', 'success');
+                    closeTransferModal();
+                    loadDashboard();
+                } else {
+                    showMessage('dashMessage', result || 'Transfer failed', 'error');
+                }
+            } catch (error) {
+                showMessage('dashMessage', 'Error processing transfer', 'error');
+                console.error(error);
+            }
+        });
+    }
+
+    document.getElementById('updateForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const key = document.getElementById('updateKey').value;
+        const value = document.getElementById('updateValue').value;
+
+        const updateData = {
+            id: parseInt(userId),
+            key: key,
+            value: value
+        };
+
+        try {
+            const response = await fetch(`${API_URL}/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updateData)
+            });
+            const result = await response.text();
+            if (response.ok && result && result.toLowerCase().includes('successfully')) {
+                showMessage('dashMessage', 'Profile updated successfully!', 'success');
+                closeUpdateModal();
+                loadDashboard();
+            } else {
+                showMessage('dashMessage', result || 'Update failed', 'error');
+            }
+        } catch (error) {
+            showMessage('dashMessage', 'Error updating profile', 'error');
+            console.error('Update error:', error);
+        }
+    });
+
+    function logout() {
+        window.location.href = 'home.html';
+    }
+
+    function validateUserAccess() {
+        const storedUserId = localStorage.getItem("userId");
+        const storedRole = localStorage.getItem("role") || "customer";
+
+        const params = new URLSearchParams(window.location.search);
+        const urlUserId = params.get("id");
+
+        if (!storedUserId) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (urlUserId && urlUserId !== storedUserId) {
+            alert("Unauthorized access detected!");
+            window.location.href = "login.html";
+            return;
+        }
+
+        userId = storedUserId;
+        role = storedRole;
+
+        window.history.replaceState({}, document.title, "dashboard.html");
+    }
+
+    function goToPassbook() {
+        window.location.href =
+            `passbook.html?id=${userId}&role=${encodeURIComponent(role)}`;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        validateUserAccess();
+        loadDashboard();
+    });
+
+    window.addEventListener('click', (e) => {
+        const withdrawModal = document.getElementById('withdrawModal');
+        const depositModal = document.getElementById('depositModal');
+        const transferModal = document.getElementById('transferModal');
+        const updateModal = document.getElementById('updateModal');
+
+        if (e.target === withdrawModal) withdrawModal.classList.remove('show');
+        if (e.target === depositModal) depositModal.classList.remove('show');
+        if (e.target === transferModal) transferModal.classList.remove('show');
+        if (e.target === updateModal) updateModal.classList.remove('show');
+    });
+</script>
+
+</body>
+</html>
