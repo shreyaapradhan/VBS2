@@ -20,7 +20,7 @@ A full-stack Spring Boot banking platform with secure transactions, role-based a
 | **Database** | MySQL 8.0+, JPA/Hibernate |
 | **Frontend** | HTML5, CSS, JavaScript |
 | **Build** | Maven |
-| **Port** | 8081 |
+| **Port** | 8084 |
 
 ## 🚀 Quick Start
 
